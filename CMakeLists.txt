@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
 
 project(whisper-jni C CXX)
 
@@ -38,9 +38,27 @@ elseif(APPLE)
   set(CMAKE_INSTALL_RPATH "@loader_path")
 endif()
 
+# ---- Locate whisper.cpp sources ----
+
+set(WHISPER_SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/src/main/native/whisper")
+if(NOT EXISTS "${WHISPER_SRC_DIR}/examples/grammar-parser.cpp")
+  message(STATUS "whisper.cpp submodule not found; fetching from GitHub")
+  include(FetchContent)
+  FetchContent_Declare(
+    whisper_src
+    GIT_REPOSITORY https://github.com/ggerganov/whisper.cpp.git
+    GIT_TAG ebca09a3d1033417b0c630bbbe607b0f185b1488
+  )
+  FetchContent_MakeAvailable(whisper_src)
+  set(WHISPER_SRC_DIR "${whisper_src_SOURCE_DIR}")
+endif()
+
 # ---- Declare libraries ----
 
-add_library(whisper-jni SHARED src/main/native/io_github_givimad_whisperjni_WhisperJNI.cpp src/main/native/whisper/examples/grammar-parser.cpp)
+add_library(whisper-jni SHARED
+  src/main/native/io_github_givimad_whisperjni_WhisperJNI.cpp
+  ${WHISPER_SRC_DIR}/examples/grammar-parser.cpp
+)
 
 if(NOT DEFINED WHISPER_DIR)
 set(WHISPER_DIR "${CMAKE_CURRENT_BINARY_DIR}/w.cpp")
@@ -71,7 +89,7 @@ include(ExternalProject)
   ExternalProject_Add(
     whisper-cpp
     PREFIX "${WHISPER_INSTALL_DIR}"
-    URL "${CMAKE_CURRENT_LIST_DIR}/src/main/native/whisper"
+    SOURCE_DIR ${WHISPER_SRC_DIR}
     CMAKE_ARGS ${WHISPER_CMAKE_ARGS}
   )
   add_dependencies(whisper-jni whisper-cpp)
@@ -100,7 +118,7 @@ target_include_directories(whisper-jni PUBLIC
   ${JNI_INCLUDE_DIRS}
   src/main/native
   ${WHISPER_DIR}/include
-  ${WHISPER_INSTALL_DIR}/src/whisper-cpp/examples
+  ${WHISPER_SRC_DIR}/examples
 )
 
 # ---- Declare install targets ----
