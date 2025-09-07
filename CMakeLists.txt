@@ -15,6 +15,13 @@ option(GGML_STATIC              "ggml: static link libraries"     OFF)
 option(GGML_NATIVE              "ggml: enable -march=native flag" OFF)
 option(BUILD_SHARED_LIBS        "whisper: build shared libs"      ON )
 
+if(ANDROID AND NOT (ANDROID_ABI STREQUAL "x86" OR ANDROID_ABI STREQUAL "x86_64"))
+  set(GGML_AVX OFF)
+  set(GGML_AVX2 OFF)
+  set(GGML_FMA OFF)
+  set(GGML_F16C OFF)
+endif()
+
 if(ANDROID)
     set(JNI_INCLUDE_DIRS "")
 else()
@@ -70,6 +77,7 @@ include(ExternalProject)
     -DCMAKE_INSTALL_RPATH:STRING=${CMAKE_INSTALL_RPATH}
     -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}
     -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+    -DCMAKE_MAKE_PROGRAM:FILEPATH=${CMAKE_MAKE_PROGRAM}
     -DGGML_STATIC=${GGML_STATIC}
     -DGGML_NATIVE=${GGML_NATIVE}
     -DGGML_AVX=${GGML_AVX}
