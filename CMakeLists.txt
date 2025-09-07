@@ -40,16 +40,18 @@ endif()
 
 # ---- Locate whisper.cpp sources ----
 
-set(WHISPER_SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/src/main/native/whisper")
-if(NOT EXISTS "${WHISPER_SRC_DIR}/examples/grammar-parser.cpp")
-  message(STATUS "whisper.cpp submodule not found; fetching from GitHub")
-  include(FetchContent)
+include(FetchContent)
+set(WHISPER_SUBMODULE "${CMAKE_CURRENT_LIST_DIR}/src/main/native/whisper/CMakeLists.txt")
+if(EXISTS "${WHISPER_SUBMODULE}")
+  set(WHISPER_SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/src/main/native/whisper")
+else()
+  message(STATUS "whisper.cpp sources not found; downloading")
   FetchContent_Declare(
     whisper_src
     GIT_REPOSITORY https://github.com/ggerganov/whisper.cpp.git
     GIT_TAG ebca09a3d1033417b0c630bbbe607b0f185b1488
   )
-  FetchContent_MakeAvailable(whisper_src)
+  FetchContent_Populate(whisper_src)
   set(WHISPER_SRC_DIR "${whisper_src_SOURCE_DIR}")
 endif()
 
