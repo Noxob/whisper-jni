@@ -9,8 +9,10 @@ This library aims to support the following platforms:
 * Windows10 x86_64 (included binary requires CPU features avx2, fma, f16c, avx)
 * Linux GLIBC x86_64/arm64 (built with debian focal, GLIBC version 2.31)
 * macOS x86_64/arm64 (built targeting v11.0)
+* Android (arm64-v8a, armeabi-v7a, x86 and x86_64)
 
-The native binaries for those platforms are included in the distributed jar.
+The native binaries for the desktop platforms are included in the distributed jar.
+Android shared libraries can be built from source using the provided script.
 Please open an issue if you found it don't work on any of the supported platforms.
 
 ## Installation
@@ -79,6 +81,14 @@ git submodule update --init
 Then you need to download the model used in the tests using the script 'download-test-model.sh' or 'download-test-model.ps1', the ggml-tiny model.
 
 Run the appropriate build script for your platform (build_debian.sh, build_macos.sh or build_win.ps1), it will place the native library file on the resources directory.
+
+To produce `.so` binaries for Android set the `ANDROID_NDK` environment variable and run:
+
+```sh
+./build_android.sh
+```
+
+This will create the libraries under `build/android/<abi>` for the most common Android ABIs.
 
 Finally, you can run the project tests to confirm it works:
 
