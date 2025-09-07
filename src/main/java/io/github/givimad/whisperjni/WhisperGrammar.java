@@ -3,6 +3,7 @@ package io.github.givimad.whisperjni;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +55,7 @@ public class WhisperGrammar extends WhisperJNI.WhisperJNIPointer {
         if (!Files.exists(grammar)) {
             throw new ParseException("Grammar file does not exists.", 0);
         }
-        assertValidGrammar(Files.readString(grammar));
+        assertValidGrammar(new String(Files.readAllBytes(grammar), StandardCharsets.UTF_8));
     }
 
     /**
