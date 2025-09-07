@@ -86,6 +86,18 @@ Finally, you can run the project tests to confirm it works:
 mvn test
 ```
 
+### Android build
+
+An Android-friendly build is provided via Gradle to generate `.so` binaries for the common ABIs. After cloning the repository and
+initializing the `whisper.cpp` submodule, run the Gradle wrapper and assemble the library:
+
+```sh
+./gradlew assembleRelease
+```
+
+The compiled `.so` files for `arm64-v8a`, `armeabi-v7a`, `x86` and `x86_64` will be located under
+`build/intermediates/stripped_native_libs/release/out/lib/` for each ABI.
+
 ## Extending the native api
 
 If you want to add any missing whisper.cpp functionality you need to:
