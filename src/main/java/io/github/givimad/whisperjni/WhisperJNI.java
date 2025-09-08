@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 
 /**
  * The {@link WhisperJNI} class allows to use whisper.cpp thought the JNI.
@@ -142,7 +143,7 @@ public class WhisperJNI {
         if(!Files.exists(grammarPath) || Files.isDirectory(grammarPath)){
             throw new FileNotFoundException("Grammar file not found");
         }
-        return parseGrammar(Files.readString(grammarPath));
+        return parseGrammar(new String(Files.readAllBytes(grammarPath), StandardCharsets.UTF_8));
     }
 
     public WhisperGrammar parseGrammar(String text) throws IOException {

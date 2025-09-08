@@ -31,9 +31,14 @@ ggml-*.bin
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+.gradle/
+.cxx/
 
 ### VS Code ###
 .vscode/
 
 ### Mac OS ###
 .DS_Store
+
+# Gradle wrapper jar should not be committed
+gradle/wrapper/gradle-wrapper.jar

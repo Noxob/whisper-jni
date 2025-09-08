@@ -13,7 +13,11 @@ static JavaVM *jvmRef = nullptr;
 static void whisper_log_proxy(enum ggml_log_level level, const char * text, void * user_data) {
     if(jvmRef) {
         JNIEnv *env;
-        if (jvmRef->AttachCurrentThread((void**)&env, NULL) != JNI_OK) {
+        #if defined(__ANDROID__) || defined(ANDROID)
+        if (jvmRef->AttachCurrentThread(&env, nullptr) != JNI_OK) {
+        #else
+        if (jvmRef->AttachCurrentThread(reinterpret_cast<void **>(&env), nullptr) != JNI_OK) {
+        #endif
           return;
         }
         jclass whisperJNIClass = env->FindClass("io/github/givimad/whisperjni/WhisperJNI");

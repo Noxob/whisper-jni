@@ -11,6 +11,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 
@@ -144,7 +145,7 @@ public class LibraryUtils {
             builder.setGgmlFilename("libggml.so");
             String cpuInfo;
             try {
-                cpuInfo = Files.readString(Path.of("/proc/cpuinfo"));
+                cpuInfo = new String(Files.readAllBytes(Path.of("/proc/cpuinfo")), StandardCharsets.UTF_8);
             } catch (IOException ignored) {
                 cpuInfo = "";
             }
